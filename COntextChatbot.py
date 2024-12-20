@@ -70,8 +70,8 @@ def get_knowledge_base_path(selected_knowledge, bucket_name):
         faiss_index_blob = os.path.join(base_path, "faiss_index.index/index.faiss")
         index_blob = os.path.join(base_path, "faiss_index.index/index.pkl")
         # Define local paths
-        local_processed_texts = os.path.join("temp", "processed_texts.pkl")
-        local_embeddings = os.path.join("temp", "knowledge_base_embeddings.pkl")
+        local_processed_texts = os.path.join(temp_dir, "processed_texts.pkl")
+        local_embeddings = os.path.join(temp_dir, "knowledge_base_embeddings.pkl")
         local_faiss_index = "index.faiss"
         local_index = "index.pkl"
 
