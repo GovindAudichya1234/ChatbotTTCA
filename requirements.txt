@@ -4,4 +4,4 @@ langchain-openai
 streamlit
 google-cloud-storage
 faiss-cpu
-tempfile
+
