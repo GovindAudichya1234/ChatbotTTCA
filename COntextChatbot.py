@@ -180,6 +180,7 @@ def answer_question(query):
 
 # Streamlit Interface
 # Streamlit Interface
+# Streamlit Interface
 st.title("ChatGPT-TTCA")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_key.json"
 bucket_name = "amtstore"
@@ -197,6 +198,7 @@ if user_api_key:
     faiss_index_path = 'faiss_index'
     conversation_history_path = 'conversation_history.json'
 
+    # Knowledge base options
     knowledge_options = [
         "Child Growth and Development",
         "Philosophical and Theoretical Perspectives in Education",
@@ -219,38 +221,57 @@ if user_api_key:
         "Public Private Partnership"
     ]
 
+    # Select a knowledge base
     selected_knowledge = st.selectbox("Select a knowledge base:", knowledge_options)
     knowledge_base_path, embeddings_path = get_knowledge_base_path(selected_knowledge, bucket_name)
 
     if not knowledge_base_path or not embeddings_path:
         st.error(f"Knowledge base files not found for {selected_knowledge}.")
     else:
-        # Initialize chat history
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
+        # Initialize FAISS index and embeddings
+        if os.path.exists(processed_texts_path) and os.path.exists(faiss_index_path):
+            texts = load_processed_texts()
+            embeddings = OpenAIEmbeddings(openai_api_key=user_apikey)
+            faiss_index = load_faiss_index(embeddings)
+        else:
+            # Placeholder for loading or processing documents
+            st.error("Please upload the necessary files to proceed.")
 
-        # Display chat messages from history on app rerun
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+        # Initialize the LLM and RAG chain
+        if 'faiss_index' in locals():
+            llm = ChatOpenAI(model="gpt-4", openai_api_key=user_apikey)
+            qa_chain = RetrievalQA.from_chain_type(
+                llm=llm,
+                chain_type="stuff",
+                retriever=faiss_index.as_retriever()
+            )
 
-        # Accept user input
-        if prompt := st.chat_input("Ask me anything:"):
-            # Add user message to chat history
-            st.session_state.messages.append({"role": "user", "content": prompt})
+            # Initialize chat history
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
 
-            # Display user message in chat message container
-            with st.chat_message("user"):
-                st.markdown(prompt)
+            # Display chat messages from history on app rerun
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
-            # Get answer from the chatbot
-            answer = answer_question(prompt)
+            # Accept user input
+            if prompt := st.chat_input("Ask me anything:"):
+                # Add user message to chat history
+                st.session_state.messages.append({"role": "user", "content": prompt})
 
-            # Add assistant message to chat history
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+                # Display user message in chat message container
+                with st.chat_message("user"):
+                    st.markdown(prompt)
 
-            # Display assistant response
-            with st.chat_message("assistant"):
-                st.markdown(answer)
+                # Get answer from the chatbot
+                answer = answer_question(prompt)
+
+                # Add assistant message to chat history
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+
+                # Display assistant response
+                with st.chat_message("assistant"):
+                    st.markdown(answer)
 else:
     st.warning("Please provide your OpenAI API key to start.")
