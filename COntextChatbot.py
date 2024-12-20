@@ -120,7 +120,7 @@ def load_faiss_index(embeddings):
 # Check if processed data exists
 if os.path.exists(processed_texts_path) and os.path.exists(faiss_index_path):
     texts = load_processed_texts()
-    faiss_index = load_faiss_index(OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY")))
+    faiss_index = load_faiss_index(OpenAIEmbeddings(openai_api_key=user_apikey))
 else:
     # Path to the "Dat" folder
     dat_folder_path = r'/content/drive/MyDrive/Data2'
@@ -142,7 +142,7 @@ else:
     texts = text_splitter.split_documents(documents)
 
     # Generate embeddings for text chunks
-    embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    embeddings = OpenAIEmbeddings(openai_api_key=user_apikey)
     faiss_index = FAISS.from_documents(texts, embeddings)
 
     # Save the processed data
@@ -150,7 +150,7 @@ else:
     save_faiss_index(faiss_index)
 
 # Initialize the ChatOpenAI model for the LLM
-llm = ChatOpenAI(model="gpt-4", openai_api_key=os.getenv("OPENAI_API_KEY"))
+llm = ChatOpenAI(model="gpt-4", openai_api_key=user_apikey)
 
 # Define the RAG chain
 qa_chain = RetrievalQA.from_chain_type(
@@ -190,7 +190,7 @@ user_api_key = st.text_input("Enter your OpenAI API key:", type="password")
 # Check if API key is provided
 if user_api_key:
     # Set the OpenAI API key dynamically
-    os.environ["OPENAI_API_KEY"] = user_api_key
+    user_apikey = user_api_key
 
     # Paths for saving/loading processed data and conversation history
     processed_texts_path = './temp/processed_texts.pkl'
