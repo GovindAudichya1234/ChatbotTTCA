@@ -72,8 +72,8 @@ def get_knowledge_base_path(selected_knowledge, bucket_name):
         # Define local paths
         local_processed_texts = os.path.join(temp_dir, "processed_texts.pkl")
         local_embeddings = os.path.join(temp_dir, "knowledge_base_embeddings.pkl")
-        local_faiss_index = "index.faiss"
-        local_index = "index.pkl"
+        local_faiss_index = os.path.join(temp_dir,"index.faiss")
+        local_index = os.path.join(temp_dir,"index.pkl")
 
         # Create 'temp' directory if it doesn't exist
         if not os.path.exists("temp"):
