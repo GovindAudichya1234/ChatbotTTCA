@@ -10,6 +10,7 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains import RetrievalQA
 import streamlit as st
 from google.cloud import storage
+import tempfile
 # Set the OpenAI API key
 google_key = json.loads(st.secrets["google"]["key"])
 user_apikey = st.secrets["openai"]["api_key"]
@@ -18,7 +19,7 @@ with open("temp_key.json", "w") as f:
     json.dump(google_key, f)
 
 # Paths for saving/loading processed data and conversation history
-temp_dir = st.runtime.get_instance_temp_dir()
+temp_dir = tempfile.gettempdir()
 
 # Define paths using the temporary directory
 processed_texts_path = os.path.join(temp_dir, "processed_texts.pkl")
