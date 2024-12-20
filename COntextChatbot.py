@@ -18,9 +18,12 @@ with open("temp_key.json", "w") as f:
     json.dump(google_key, f)
 
 # Paths for saving/loading processed data and conversation history
-processed_texts_path = './temp/processed_texts.pkl'
-faiss_index_path = 'faiss_index'
-conversation_history_path = 'conversation_history.json'
+temp_dir = st.runtime.get_instance_temp_dir()
+
+# Define paths using the temporary directory
+processed_texts_path = os.path.join(temp_dir, "processed_texts.pkl")
+faiss_index_path = os.path.join(temp_dir, "faiss_index")
+conversation_history_path = os.path.join(temp_dir, "conversation_history.json")
 
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
