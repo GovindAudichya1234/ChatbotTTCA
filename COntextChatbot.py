@@ -11,7 +11,11 @@ from langchain.chains import RetrievalQA
 import streamlit as st
 from google.cloud import storage
 # Set the OpenAI API key
+google_key = json.loads(st.secrets["google"]["key"])
 
+# Save it as a temporary file
+with open("temp_key.json", "w") as f:
+    json.dump(google_key, f)
 
 # Paths for saving/loading processed data and conversation history
 processed_texts_path = './temp/processed_texts.pkl'
@@ -177,7 +181,7 @@ def answer_question(query):
 # Streamlit Interface
 # Streamlit Interface
 st.title("ChatGPT-TTCA")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"key.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_key.json"
 bucket_name = "amtstore"
 
 # Input box for the OpenAI API key
