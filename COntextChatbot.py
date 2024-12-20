@@ -12,7 +12,7 @@ import streamlit as st
 from google.cloud import storage
 # Set the OpenAI API key
 google_key = json.loads(st.secrets["google"]["key"])
-
+user_api_key = st.secrets["openai"]["api_key"]
 # Save it as a temporary file
 with open("temp_key.json", "w") as f:
     json.dump(google_key, f)
