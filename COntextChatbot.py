@@ -23,7 +23,7 @@ temp_dir = tempfile.gettempdir()
 
 # Define paths using the temporary directory
 processed_texts_path = os.path.join(temp_dir, "processed_texts.pkl")
-faiss_index_path = os.path.join(temp_dir, "index.pkl")
+faiss_index_path = os.path.join(temp_dir, "index.faiss")
 conversation_history_path = os.path.join(temp_dir, "conversation_history.json")
 
 def download_blob(bucket_name, source_blob_name, destination_file_name):
